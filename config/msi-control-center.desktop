@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=MSI EC Control
+Comment=Complete control center for MSI laptops with all features
+Exec=x-terminal-emulator -e "bash -c 'cd /home/y6/Documents/msi-ec-control && sudo ./msi-ec-control; exec bash'"
+Icon=applications-system
+Terminal=true
+Categories=System;Settings;HardwareSettings;
+Keywords=msi;fan;performance;laptop;

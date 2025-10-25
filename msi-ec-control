@@ -1,0 +1,767 @@
+#!/bin/bash
+# ==========================================
+#  MSI EC Control - Advanced Edition
+#  Author: Yousef Osama (Enhanced by AI)
+#  Version: 2.0
+# ==========================================
+
+set -euo pipefail
+
+EC_PATH="/sys/devices/platform/msi-ec"
+CONFIG_DIR="$HOME/.config/msi-ec-control"
+HISTORY_FILE="$CONFIG_DIR/history.log"
+PROFILE_DIR="$CONFIG_DIR/profiles"
+MAX_HISTORY=100
+
+# Create config directories
+mkdir -p "$CONFIG_DIR" "$PROFILE_DIR"
+
+# Check if EC module is loaded
+if [ ! -d "$EC_PATH" ]; then
+  echo "❌ MSI EC module not found at $EC_PATH"
+  echo "Please load the msi-ec kernel module first."
+  exit 1
+fi
+
+# --- Colors & Formatting ---
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+WHITE=$(tput setaf 7)
+BOLD=$(tput bold)
+RESET=$(tput sgr0)
+
+# Temperature thresholds
+TEMP_CRITICAL=85
+TEMP_HIGH=75
+TEMP_NORMAL=60
+
+# Previous values for trend detection
+declare -A PREV_VALUES
+
+# --- Utility Functions ---
+log_action() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$HISTORY_FILE"
+  # Keep only last MAX_HISTORY lines
+  tail -n "$MAX_HISTORY" "$HISTORY_FILE" > "$HISTORY_FILE.tmp" && mv "$HISTORY_FILE.tmp" "$HISTORY_FILE"
+}
+
+safe_read() {
+  local file="$1"
+  if [ -f "$file" ]; then
+    cat "$file" 2>/dev/null || echo "N/A"
+  else
+    echo "N/A"
+  fi
+}
+
+safe_write() {
+  local file="$1"
+  local value="$2"
+  if [ -f "$file" ]; then
+    echo "$value" | sudo tee "$file" >/dev/null 2>&1
+    return $?
+  fi
+  return 1
+}
+
+get_temp_color() {
+  local temp=$1
+  if [ "$temp" = "N/A" ]; then
+    echo "$WHITE"
+  elif [ "$temp" -ge "$TEMP_CRITICAL" ]; then
+    echo "$RED$BOLD"
+  elif [ "$temp" -ge "$TEMP_HIGH" ]; then
+    echo "$YELLOW$BOLD"
+  elif [ "$temp" -ge "$TEMP_NORMAL" ]; then
+    echo "$YELLOW"
+  else
+    echo "$GREEN"
+  fi
+}
+
+get_temp_indicator() {
+  local temp=$1
+  if [ "$temp" = "N/A" ]; then
+    echo "?"
+  elif [ "$temp" -ge "$TEMP_CRITICAL" ]; then
+    echo "!!"
+  elif [ "$temp" -ge "$TEMP_HIGH" ]; then
+    echo "!"
+  elif [ "$temp" -ge "$TEMP_NORMAL" ]; then
+    echo "*"
+  else
+    echo "OK"
+  fi
+}
+
+get_trend() {
+  local key=$1
+  local current=$2
+  local prev="${PREV_VALUES[$key]:-$current}"
+  
+  if [ "$current" = "N/A" ] || [ "$prev" = "N/A" ]; then
+    echo "━"
+  elif [ "$current" -gt "$prev" ]; then
+    echo "↑"
+  elif [ "$current" -lt "$prev" ]; then
+    echo "↓"
+  else
+    echo "→"
+  fi
+}
+
+draw_bar() {
+  local value=$1
+  local max=$2
+  local width=20
+  
+  if [ "$value" = "N/A" ]; then
+    echo "[$WHITE$(printf '%-'$width's' 'N/A')$RESET]"
+    return
+  fi
+  
+  local filled=$((value * width / max))
+  [ $filled -gt $width ] && filled=$width
+  local empty=$((width - filled))
+  
+  local color=$(get_temp_color "$value")
+  printf "[${color}"
+  printf '█%.0s' $(seq 1 $filled)
+  printf "${WHITE}"
+  printf '░%.0s' $(seq 1 $empty)
+  printf "${RESET}]"
+}
+
+# --- Data Collection ---
+collect_status() {
+  local -n data=$1
+  
+  # Temperatures
+  data[cpu_temp]=$(safe_read "$EC_PATH/cpu/realtime_temperature")
+  data[gpu_temp]=$(safe_read "$EC_PATH/gpu/realtime_temperature")
+  
+  # Fan speeds
+  data[cpu_fan]=$(safe_read "$EC_PATH/cpu/realtime_fan_speed")
+  data[gpu_fan]=$(safe_read "$EC_PATH/gpu/realtime_fan_speed")
+  
+  # Modes
+  data[fan_mode]=$(safe_read "$EC_PATH/fan_mode")
+  data[shift_mode]=$(safe_read "$EC_PATH/shift_mode")
+  
+  # Toggles
+  data[cooler_boost]=$(safe_read "$EC_PATH/cooler_boost")
+  data[super_battery]=$(safe_read "$EC_PATH/super_battery")
+  data[webcam]=$(safe_read "$EC_PATH/webcam")
+  data[webcam_block]=$(safe_read "$EC_PATH/webcam_block")
+  data[win_key]=$(safe_read "$EC_PATH/win_key")
+  data[kbd_backlight]=$(safe_read "$EC_PATH/leds/msiacpi::kbd_backlight/brightness")
+  
+  # Firmware info
+  data[fw_version]=$(safe_read "$EC_PATH/fw_version")
+  data[fw_date]=$(safe_read "$EC_PATH/fw_release_date")
+}
+
+# --- Display Functions ---
+show_advanced_status() {
+  declare -A status
+  collect_status status
+  
+  clear
+  echo ""
+  echo "============================================================"
+  echo "[*] MSI EC Control - System Status"
+  echo "============================================================"
+  echo ""
+  
+  # Temperature section
+  echo "[+] TEMPERATURES"
+  echo "────────────────────────────────────────────────────────────────"
+  
+  local cpu_temp="${status[cpu_temp]}"
+  local gpu_temp="${status[gpu_temp]}"
+  local cpu_color=$(get_temp_color "$cpu_temp")
+  local gpu_color=$(get_temp_color "$gpu_temp")
+  local cpu_icon=$(get_temp_indicator "$cpu_temp")
+  local gpu_icon=$(get_temp_indicator "$gpu_temp")
+  local cpu_trend=$(get_trend "cpu_temp" "$cpu_temp")
+  local gpu_trend=$(get_trend "gpu_temp" "$gpu_temp")
+  
+  printf " [%s] CPU: ${cpu_color}%3s°C${RESET} %s $(draw_bar "$cpu_temp" 100)\n" "$cpu_icon" "$cpu_temp" "$cpu_trend"
+  printf " [%s] GPU: ${gpu_color}%3s°C${RESET} %s $(draw_bar "$gpu_temp" 100)\n" "$gpu_icon" "$gpu_temp" "$gpu_trend"
+  echo "────────────────────────────────────────────────────────────────"
+  echo ""
+  
+  # Fan speeds
+  echo "[+] FAN SPEEDS"
+  echo "────────────────────────────────────────────────────────────────"
+  printf " CPU Fan: ${GREEN}%5s RPM${RESET}  |  GPU Fan: ${GREEN}%5s RPM${RESET}\n" "${status[cpu_fan]}" "${status[gpu_fan]}"
+  echo "────────────────────────────────────────────────────────────────"
+  echo ""
+  
+  # Modes
+  echo "[+] PERFORMANCE MODES"
+  echo "────────────────────────────────────────────────────────────────"
+  printf " Fan Mode:   ${YELLOW}%-10s${RESET} | Shift Mode: ${YELLOW}%-10s${RESET}\n" "${status[fan_mode]}" "${status[shift_mode]}"
+  echo "────────────────────────────────────────────────────────────────"
+  echo ""
+  
+  # Toggles
+  echo "[+] TOGGLES & SETTINGS"
+  echo "────────────────────────────────────────────────────────────────"
+  local cb_status=$([ "${status[cooler_boost]}" = "on" ] && echo "${GREEN}[ON]${RESET}" || echo "${RED}[OFF]${RESET}")
+  local sb_status=$([ "${status[super_battery]}" = "on" ] && echo "${GREEN}[ON]${RESET}" || echo "${RED}[OFF]${RESET}")
+  local wc_status=$([ "${status[webcam]}" = "on" ] && echo "${GREEN}[ON]${RESET}" || echo "${RED}[OFF]${RESET}")
+  local wk_status=$([ "${status[win_key]}" = "left" ] && echo "${GREEN}[ENABLED]${RESET}" || echo "${RED}[DISABLED]${RESET}")
+  printf " Cooler Boost:   %b | Super Battery:  %b\n" "$cb_status" "$sb_status"
+  printf " Webcam:         %b | Win Key:        %b\n" "$wc_status" "$wk_status"
+  printf " Kbd Backlight:  ${YELLOW}%-3s${RESET} (0-3)\n" "${status[kbd_backlight]}"
+  echo "────────────────────────────────────────────────────────────────"
+  echo ""
+  
+  # Firmware info
+  echo "[+] SYSTEM INFO"
+  echo "────────────────────────────────────────────────────────────────"
+  printf " Firmware: ${MAGENTA}%-20s${RESET} Date: ${MAGENTA}%-20s${RESET}\n" "${status[fw_version]}" "${status[fw_date]}"
+  echo "────────────────────────────────────────────────────────────────"
+  
+  # Store current values for trend detection
+  PREV_VALUES[cpu_temp]=$cpu_temp
+  PREV_VALUES[gpu_temp]=$gpu_temp
+}
+
+# --- Monitoring Mode ---
+monitor_realtime() {
+  echo "[*] Starting real-time monitoring..."
+  echo "[*] Press 'S' to stop monitoring"
+  sleep 1
+  
+  while true; do
+    show_advanced_status
+    
+    # Check for critical temps
+    declare -A status
+    collect_status status
+    
+    if [ "${status[cpu_temp]}" != "N/A" ] && [ "${status[cpu_temp]}" -ge "$TEMP_CRITICAL" ]; then
+      echo "${RED}${BOLD}[!] WARNING: CPU temperature critical! Consider enabling Cooler Boost.${RESET}"
+    fi
+    
+    if [ "${status[gpu_temp]}" != "N/A" ] && [ "${status[gpu_temp]}" -ge "$TEMP_CRITICAL" ]; then
+      echo "${RED}${BOLD}[!] WARNING: GPU temperature critical!${RESET}"
+    fi
+    
+    echo ""
+    echo "[*] Refreshing in 2 seconds... (Press 'S' to stop)"
+    
+    # Read input with timeout (returns 0 if key pressed, >0 if timeout)
+    if read -t 2 -n 1 input 2>/dev/null; then
+      if [[ $input == "s" ]] || [[ $input == "S" ]]; then
+        echo ""
+        echo "[+] Monitoring stopped"
+        sleep 1
+        break
+      fi
+    fi
+  done
+}
+
+# --- Profile Management ---
+save_profile() {
+  local name="$1"
+  declare -A status
+  collect_status status
+  
+  local profile_file="$PROFILE_DIR/$name.profile"
+  
+  cat > "$profile_file" <<EOF
+# MSI EC Control Profile: $name
+# Created: $(date)
+fan_mode=${status[fan_mode]}
+shift_mode=${status[shift_mode]}
+cooler_boost=${status[cooler_boost]}
+super_battery=${status[super_battery]}
+webcam=${status[webcam]}
+win_key=${status[win_key]}
+kbd_backlight=${status[kbd_backlight]}
+EOF
+  
+  echo "${GREEN}✓ Profile '$name' saved to $profile_file${RESET}"
+  log_action "Profile saved: $name"
+}
+
+load_profile() {
+  local name="$1"
+  local profile_file="$PROFILE_DIR/$name.profile"
+  
+  if [ ! -f "$profile_file" ]; then
+    echo "${RED}[!] Profile '$name' not found${RESET}"
+    return 1
+  fi
+  
+  source "$profile_file"
+  
+  echo "[*] Loading profile: $name"
+  safe_write "$EC_PATH/fan_mode" "$fan_mode" && echo "  Fan mode: $fan_mode"
+  safe_write "$EC_PATH/shift_mode" "$shift_mode" && echo "  Shift mode: $shift_mode"
+  safe_write "$EC_PATH/cooler_boost" "$cooler_boost" && echo "  Cooler boost: $cooler_boost"
+  safe_write "$EC_PATH/super_battery" "$super_battery" && echo "  Super battery: $super_battery"
+  
+  # Optional settings (may not exist in older profiles)
+  if [ -n "${webcam:-}" ]; then
+    safe_write "$EC_PATH/webcam" "$webcam" && echo "  Webcam: $webcam"
+  fi
+  if [ -n "${win_key:-}" ]; then
+    safe_write "$EC_PATH/win_key" "$win_key" && echo "  Win key: $win_key"
+  fi
+  if [ -n "${kbd_backlight:-}" ]; then
+    safe_write "$EC_PATH/leds/msiacpi::kbd_backlight/brightness" "$kbd_backlight" && echo "  Kbd backlight: $kbd_backlight"
+  fi
+  
+  echo "${GREEN}[OK] Profile '$name' loaded${RESET}"
+  log_action "Profile loaded: $name"
+}
+
+list_profiles() {
+  echo "[+] Available Profiles:"
+  if [ -d "$PROFILE_DIR" ] && [ "$(ls -A "$PROFILE_DIR")" ]; then
+    for profile in "$PROFILE_DIR"/*.profile; do
+      local name=$(basename "$profile" .profile)
+      echo "  - $name"
+    done
+  else
+    echo "  (none)"
+  fi
+}
+
+# --- Preset Configurations ---
+apply_preset() {
+  local preset="$1"
+  
+  case "$preset" in
+    gaming|extreme)
+      echo "[*] Applying GAMING/EXTREME preset..."
+      safe_write "$EC_PATH/fan_mode" "advanced"
+      safe_write "$EC_PATH/shift_mode" "turbo"
+      safe_write "$EC_PATH/cooler_boost" "on"
+      safe_write "$EC_PATH/super_battery" "off"
+      echo "${GREEN}[OK] Gaming mode enabled (Max performance)${RESET}"
+      log_action "Preset applied: Gaming/Extreme"
+      ;;
+    balanced)
+      echo "[*] Applying BALANCED preset..."
+      safe_write "$EC_PATH/fan_mode" "auto"
+      safe_write "$EC_PATH/shift_mode" "comfort"
+      safe_write "$EC_PATH/cooler_boost" "off"
+      safe_write "$EC_PATH/super_battery" "off"
+      echo "${GREEN}[OK] Balanced mode enabled${RESET}"
+      log_action "Preset applied: Balanced"
+      ;;
+    silent|quiet)
+      echo "[*] Applying SILENT preset..."
+      safe_write "$EC_PATH/fan_mode" "silent"
+      safe_write "$EC_PATH/shift_mode" "eco"
+      safe_write "$EC_PATH/cooler_boost" "off"
+      safe_write "$EC_PATH/super_battery" "on"
+      echo "${GREEN}[OK] Silent mode enabled (Power saving)${RESET}"
+      log_action "Preset applied: Silent"
+      ;;
+    *)
+      echo "${RED}[!] Unknown preset: $preset${RESET}"
+      return 1
+      ;;
+  esac
+}
+
+# --- Change Functions ---
+set_fan_mode() {
+  echo "${YELLOW}Available fan modes:${RESET}"
+  cat "$EC_PATH/available_fan_modes" | nl
+  read -p "Enter new fan mode (or number): " mode
+  
+  # If number is entered, get the actual mode
+  if [[ "$mode" =~ ^[0-9]+$ ]]; then
+    mode=$(cat "$EC_PATH/available_fan_modes" | sed -n "${mode}p")
+  fi
+  
+  if safe_write "$EC_PATH/fan_mode" "$mode"; then
+    echo "${GREEN}✓ Fan mode set to: $mode${RESET}"
+    log_action "Fan mode changed to: $mode"
+  else
+    echo "${RED}✗ Failed to set fan mode${RESET}"
+  fi
+}
+
+set_shift_mode() {
+  echo "${YELLOW}Available shift modes:${RESET}"
+  cat "$EC_PATH/available_shift_modes" | nl
+  read -p "Enter new shift mode (or number): " mode
+  
+  if [[ "$mode" =~ ^[0-9]+$ ]]; then
+    mode=$(cat "$EC_PATH/available_shift_modes" | sed -n "${mode}p")
+  fi
+  
+  if safe_write "$EC_PATH/shift_mode" "$mode"; then
+    echo "${GREEN}✓ Shift mode set to: $mode${RESET}"
+    log_action "Shift mode changed to: $mode"
+  else
+    echo "${RED}✗ Failed to set shift mode${RESET}"
+  fi
+}
+
+toggle_setting() {
+  local setting="$1"
+  local file="$EC_PATH/$setting"
+  
+  # Special handling for keyboard backlight (use full path)
+  if [ "$setting" = "kbd_backlight" ]; then
+    file="$EC_PATH/leds/msiacpi::kbd_backlight/brightness"
+  fi
+  
+  if [ ! -f "$file" ]; then
+    echo "${RED}✗ Setting '$setting' not available${RESET}"
+    return 1
+  fi
+  
+  local current=$(safe_read "$file")
+  local new_value
+  
+  # Special handling for win_key (left/right instead of on/off)
+  if [ "$setting" = "win_key" ]; then
+    case "$current" in
+      left)
+        new_value="right"
+        echo "${YELLOW}$setting: left (enabled) → right (disabled)${RESET}"
+        ;;
+      right)
+        new_value="left"
+        echo "${YELLOW}$setting: right (disabled) → left (enabled)${RESET}"
+        ;;
+      *)
+        echo "${YELLOW}Current value: $current (setting to 'left')${RESET}"
+        new_value="left"
+        ;;
+    esac
+  else
+    # Standard on/off toggle
+    case "$current" in
+      on|1|enabled)
+        new_value="off"
+        ;;
+      off|0|disabled)
+        new_value="on"
+        ;;
+      *)
+        echo "${YELLOW}Current value: $current (toggling to 'on')${RESET}"
+        new_value="on"
+        ;;
+    esac
+  fi
+  
+  if safe_write "$file" "$new_value"; then
+    echo "${GREEN}✓ $setting: $current → $new_value${RESET}"
+    log_action "$setting toggled: $current → $new_value"
+  else
+    echo "${RED}✗ Failed to toggle $setting${RESET}"
+  fi
+}
+
+# --- History ---
+show_history() {
+  echo "[+] Recent Actions:"
+  if [ -f "$HISTORY_FILE" ]; then
+    tail -n 20 "$HISTORY_FILE"
+  else
+    echo "  (no history)"
+  fi
+}
+
+# --- Keyboard Backlight Control ---
+set_kbd_backlight() {
+  local file="$EC_PATH/leds/msiacpi::kbd_backlight/brightness"
+  local current=$(safe_read "$file")
+  
+  echo "${YELLOW}Current keyboard backlight: $current${RESET}"
+  echo ""
+  echo "Brightness levels:"
+  echo "  0 - Off"
+  echo "  1 - Low"
+  echo "  2 - Medium"
+  echo "  3 - High"
+  echo ""
+  read -p "Enter brightness (0-3): " level
+  
+  if [[ ! "$level" =~ ^[0-3]$ ]]; then
+    echo "${RED}✗ Invalid level. Must be 0-3${RESET}"
+    return 1
+  fi
+  
+  if safe_write "$file" "$level"; then
+    echo "${GREEN}✓ Keyboard backlight set to: $level${RESET}"
+    log_action "Keyboard backlight changed to: $level"
+  else
+    echo "${RED}✗ Failed to set keyboard backlight${RESET}"
+  fi
+}
+
+# --- Analysis Mode ---
+run_analysis() {
+  echo "[*] Running 30-second thermal analysis..."
+  echo "This will monitor temperature trends and provide recommendations."
+  echo ""
+  
+  declare -A readings
+  local count=0
+  local cpu_sum=0
+  local gpu_sum=0
+  local cpu_max=0
+  local gpu_max=0
+  
+  for i in {1..15}; do
+    declare -A status
+    collect_status status
+    
+    local cpu="${status[cpu_temp]}"
+    local gpu="${status[gpu_temp]}"
+    
+    if [ "$cpu" != "N/A" ]; then
+      cpu_sum=$((cpu_sum + cpu))
+      [ $cpu -gt $cpu_max ] && cpu_max=$cpu
+    fi
+    
+    if [ "$gpu" != "N/A" ]; then
+      gpu_sum=$((gpu_sum + gpu))
+      [ $gpu -gt $gpu_max ] && gpu_max=$gpu
+    fi
+    
+    printf "  Sample %2d/15: CPU %3s°C | GPU %3s°C\n" "$i" "$cpu" "$gpu"
+    count=$((count + 1))
+    sleep 2
+  done
+  
+  local cpu_avg=$((cpu_sum / count))
+  local gpu_avg=$((gpu_sum / count))
+  
+  echo ""
+  echo "============================================================"
+  echo "[+] Analysis Results"
+  echo "============================================================"
+  echo "CPU: Avg ${cpu_avg}°C | Max ${cpu_max}°C"
+  echo "GPU: Avg ${gpu_avg}°C | Max ${gpu_max}°C"
+  echo ""
+  
+  # Recommendations
+  echo "[+] Recommendations:"
+  echo ""
+  
+  if [ $cpu_max -ge $TEMP_CRITICAL ]; then
+    echo "${RED}  [!] CPU reached critical temps! Consider:${RESET}"
+    echo "     - Enable Cooler Boost"
+    echo "     - Set Fan Mode to 'advanced'"
+    echo "     - Clean laptop vents"
+  elif [ $cpu_avg -ge $TEMP_HIGH ]; then
+    echo "${YELLOW}  [!] CPU running warm. Suggested:${RESET}"
+    echo "     - Fan Mode: advanced"
+    echo "     - Consider enabling Cooler Boost during heavy loads"
+  else
+    echo "${GREEN}  [OK] CPU temperatures are healthy${RESET}"
+  fi
+  
+  if [ $gpu_max -ge $TEMP_CRITICAL ]; then
+    echo "${RED}  [!] GPU reached critical temps!${RESET}"
+  elif [ $gpu_avg -ge $TEMP_HIGH ]; then
+    echo "${YELLOW}  [!] GPU running warm${RESET}"
+  else
+    echo "${GREEN}  [OK] GPU temperatures are healthy${RESET}"
+  fi
+  
+  log_action "Analysis: CPU avg=$cpu_avg max=$cpu_max | GPU avg=$gpu_avg max=$gpu_max"
+}
+
+# --- Main Loop ---
+main() {
+  while true; do
+    clear
+    echo ""
+    echo " __  __ ____ ___    _____ ____    ____            _             _ "
+    echo "|  \/  / ___|_ _|  | ____/ ___|  / ___|___  _ __ | |_ _ __ ___ | |"
+    echo "| |\/| \___ \| |   |  _|| |     | |   / _ \| '_ \| __| '__/ _ \| |"
+    echo "| |  | |___) | |   | |__| |___  | |__| (_) | | | | |_| | | (_) | |"
+    echo "|_|  |_|____/___|  |_____\____|  \____\___/|_| |_|\__|_|  \___/|_|"
+    echo "============================================================"
+    echo "[*] Yousef Osama - Studying Cybersecurity Engineering in Egyptian Chinese University"
+    echo "============================================================"
+    echo ""
+    echo "[+] Available Options:"
+    echo "────────────────────────────────────────"
+    echo "  [1] View System Status"
+    echo "  [2] Real-time Monitor"
+    echo "  [3] Thermal Analysis"
+    echo "  [4] Quick Presets"
+    echo "  [5] Manual Controls"
+    echo "  [6] Profile Management"
+    echo "  [7] View History"
+    echo "  [8] Settings"
+    echo "  [9] Exit"
+    echo "────────────────────────────────────────"
+    echo ""
+    read -p "[+] Select Option > " choice
+    
+    case "$choice" in
+      1)
+        show_advanced_status
+        read -p "Press Enter to continue..."
+        ;;
+      2)
+        monitor_realtime
+        ;;
+      3)
+        run_analysis
+        read -p "Press Enter to continue..."
+        ;;
+      4)
+        # Quick Presets submenu
+        clear
+        echo ""
+        echo "[+] Quick Presets:"
+        echo "────────────────────────────────────────"
+        echo "  [1] Gaming Mode (advanced fan + turbo)"
+        echo "  [2] Balanced Mode (auto fan + comfort)"
+        echo "  [3] Silent Mode (silent fan + eco)"
+        echo "  [0] Back to main menu"
+        echo "────────────────────────────────────────"
+        read -p "[+] Select Preset > " preset_choice
+        case "$preset_choice" in
+          1) apply_preset "gaming" ;;
+          2) apply_preset "balanced" ;;
+          3) apply_preset "silent" ;;
+          0) ;;
+          *) echo "${RED}Invalid option${RESET}" ;;
+        esac
+        sleep 2
+        ;;
+      5)
+        # Manual Controls submenu
+        clear
+        echo ""
+        echo "[+] Manual Controls:"
+        echo "────────────────────────────────────────"
+        echo "  [1] Change Fan Mode"
+        echo "  [2] Change Shift Mode"
+        echo "  [3] Toggle Cooler Boost"
+        echo "  [4] Toggle Super Battery"
+        echo "  [5] Toggle Webcam"
+        echo "  [6] Toggle Windows Key"
+        echo "  [7] Set Keyboard Backlight (0-3)"
+        echo "  [0] Back to main menu"
+        echo "────────────────────────────────────────"
+        read -p "[+] Select Control > " control_choice
+        case "$control_choice" in
+          1) set_fan_mode ;;
+          2) set_shift_mode ;;
+          3) toggle_setting "cooler_boost" ;;
+          4) toggle_setting "super_battery" ;;
+          5) toggle_setting "webcam" ;;
+          6) toggle_setting "win_key" ;;
+          7) set_kbd_backlight ;;
+          0) ;;
+          *) echo "${RED}Invalid option${RESET}" ;;
+        esac
+        sleep 2
+        ;;
+      6)
+        # Profile Management submenu
+        clear
+        echo ""
+        echo "[+] Profile Management:"
+        echo "────────────────────────────────────────"
+        echo "  [1] Save Current as Profile"
+        echo "  [2] Load Profile"
+        echo "  [3] List Profiles"
+        echo "  [0] Back to main menu"
+        echo "────────────────────────────────────────"
+        read -p "[+] Select Option > " profile_choice
+        case "$profile_choice" in
+          1)
+            read -p "Enter profile name: " pname
+            save_profile "$pname"
+            sleep 2
+            ;;
+          2)
+            list_profiles
+            read -p "Enter profile name to load: " pname
+            load_profile "$pname"
+            sleep 2
+            ;;
+          3)
+            list_profiles
+            read -p "Press Enter to continue..."
+            ;;
+          0) ;;
+          *) echo "${RED}Invalid option${RESET}"; sleep 1 ;;
+        esac
+        ;;
+      7)
+        show_history
+        read -p "Press Enter to continue..."
+        ;;
+      8)
+        # Settings submenu (placeholder for future expansion)
+        clear
+        echo ""
+        echo "[+] Settings:"
+        echo "────────────────────────────────────────"
+        echo "  [1] View Firmware Info"
+        echo "  [2] Check Module Status"
+        echo "  [3] Clear History"
+        echo "  [0] Back to main menu"
+        echo "────────────────────────────────────────"
+        read -p "[+] Select Option > " setting_choice
+        case "$setting_choice" in
+          1)
+            declare -A status
+            collect_status status
+            echo ""
+            echo "Firmware Version: ${status[fw_version]}"
+            echo "Firmware Date: ${status[fw_date]}"
+            echo ""
+            read -p "Press Enter to continue..."
+            ;;
+          2)
+            echo ""
+            if [ -d "$EC_PATH" ]; then
+              echo "${GREEN}MSI EC module is loaded${RESET}"
+              echo "Path: $EC_PATH"
+            else
+              echo "${RED}MSI EC module not found${RESET}"
+            fi
+            echo ""
+            read -p "Press Enter to continue..."
+            ;;
+          3)
+            > "$HISTORY_FILE"
+            echo "${GREEN}History cleared${RESET}"
+            sleep 1
+            ;;
+          0) ;;
+          *) echo "${RED}Invalid option${RESET}"; sleep 1 ;;
+        esac
+        ;;
+      9)
+        echo ""
+        echo "[*] Goodbye!"
+        exit 0
+        ;;
+      *)
+        echo "${RED}[!] Invalid option${RESET}"
+        sleep 1
+        ;;
+    esac
+  done
+}
+
+# Run main menu
+main
