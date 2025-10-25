@@ -1,4 +1,4 @@
-# MSI EC Control Center# MSI EC Control# MSI EC Control# MSI EC Control - Complete Laptop Control Suite# MSI EC Control (open-source)
+# MSI EC Control Center# MSI EC Control Center# MSI EC Control# MSI EC Control# MSI EC Control - Complete Laptop Control Suite# MSI EC Control (open-source)
 
 
 
@@ -6,15 +6,15 @@
 
 [![Bash](https://img.shields.io/badge/bash-5.0%2B-green.svg)](https://www.gnu.org/software/bash/)
 
-[![MSI EC](https://img.shields.io/badge/MSI--EC-kernel%20module-blue.svg)](https://github.com/BeardOverflow/msi-ec)Complete control center for MSI laptops using the `msi-ec` kernel module.
+[![MSI EC](https://img.shields.io/badge/MSI--EC-kernel%20module-blue.svg)](https://github.com/BeardOverflow/msi-ec)[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
 
-A complete, feature-rich control center for MSI laptops using the `msi-ec` kernel module. Single-file bash script with no dependencies - control your MSI laptop's performance, fans, and settings with an intuitive terminal interface.
+A complete, feature-rich control center for MSI laptops using the `msi-ec` kernel module. Single-file bash script with no dependencies - control your MSI laptop's performance, fans, and settings with an intuitive terminal interface.[![Bash](https://img.shields.io/badge/bash-5.0%2B-green.svg)](https://www.gnu.org/software/bash/)
 
 
 
-```## 🚀 Quick StartProfessional control center for MSI laptops using the `msi-ec` kernel module.
+```[![MSI EC](https://img.shields.io/badge/MSI--EC-kernel%20module-blue.svg)](https://github.com/BeardOverflow/msi-ec)Complete control center for MSI laptops using the `msi-ec` kernel module.
 
  __  __ ____ ___   _____ ____    ____            _             _ 
 
@@ -22,147 +22,199 @@ A complete, feature-rich control center for MSI laptops using the `msi-ec` kerne
 
 | |\/| \___ \| |  |  _|| |     | |   / _ \| '_ \| __| '__/ _ \| |
 
-| |  | |___) | |  | |__| |___  | |__| (_) | | | | |_| | | (_) | |**Run the control center:**
+| |  | |___) | |  | |__| |___  | |__| (_) | | | | |_| | | (_) | |A complete, feature-rich control center for MSI laptops using the `msi-ec` kernel module. Single-file bash script with no dependencies - control your MSI laptop's performance, fans, and settings with an intuitive terminal interface.
 
 |_|  |_|____/___| |_____\____|  \____\___/|_| |_|\__|_|  \___/|_|
 
-``````bash
+```
 
 
 
-## ✨ Featuressudo ./msi-ec-control## 🚀 Quick StartControl your MSI laptop's fan, performance modes, and monitor temperatures using the `msi-ec` kernel module.This small project provides two frontends for controlling MSI laptops via the `msi-ec` kernel module:
+## ✨ Features```## 🚀 Quick StartProfessional control center for MSI laptops using the `msi-ec` kernel module.
 
 
 
-- 🌡️ **Real-time Monitoring** - Live temperature and fan speed tracking with color indicators```
+- 🌡️ **Real-time Monitoring** - Live temperature and fan speed tracking with color indicators __  __ ____ ___   _____ ____    ____            _             _ 
 
 - 🎮 **Quick Presets** - Gaming, Balanced, and Silent modes with one click
 
-- ⚙️ **Manual Controls** - Fine-tune fan mode, shift mode, and all hardware settings
+- ⚙️ **Manual Controls** - Fine-tune fan mode, shift mode, and all hardware settings|  \/  / ___|_ _| | ____/ ___|  / ___|___  _ __ | |_ _ __ ___ | |
 
 - 💾 **Profile System** - Save and load your custom configurations
 
-- 📊 **Thermal Analysis** - 30-second monitoring with smart recommendations**Or use Desktop Shortcut:**
+- 📊 **Thermal Analysis** - 30-second monitoring with smart recommendations| |\/| \___ \| |  |  _|| |     | |   / _ \| '_ \| __| '__/ _ \| |
 
 - 🎨 **Beautiful Interface** - Clean ASCII art with color-coded information
 
-- 🚀 **Zero Dependencies** - Pure bash script, no Python or external libraries needed- Click **MSI EC Control** icon on desktop or in application menu**Simple Menu:**
+- 🚀 **Zero Dependencies** - Pure bash script, no Python or external libraries needed| |  | |___) | |  | |__| |___  | |__| (_) | | | | |_| | | (_) | |**Run the control center:**
 
 
 
-## 🎯 Quick Start
+## 🎯 Quick Start|_|  |_|____/___| |_____\____|  \____\___/|_| |_|\__|_|  \___/|_|
 
 
 
-### Prerequisites## ⚡ Features```bash
+### Prerequisites``````bash
 
 
 
-1. MSI laptop with the [`msi-ec`](https://github.com/BeardOverflow/msi-ec) kernel module installed and loaded
+1. MSI laptop with the `msi-ec` kernel module installed and loaded
 
 2. Root access (sudo)
 
-- ✅ Real-time temperature monitoring with color indicators & trend arrowssudo bin/msi-ec-menu## 🚀 Quick Start- `msi-ec-cli`: A command-line tool to read and set fan/performance-related properties.
+## ✨ Featuressudo ./msi-ec-control## 🚀 Quick StartControl your MSI laptop's fan, performance modes, and monitor temperatures using the `msi-ec` kernel module.This small project provides two frontends for controlling MSI laptops via the `msi-ec` kernel module:
 
-### Installation
+> **📖 New to MSI EC?** See our complete [INSTALLATION.md](INSTALLATION.md) guide for step-by-step instructions on installing both the kernel module and control center.
 
-- ✅ Fan mode control (auto/silent/advanced)
+
+
+### Quick Install (Module Already Installed)
+
+- 🌡️ **Real-time Monitoring** - Live temperature and fan speed tracking with color indicators```
 
 ```bash
 
-# Clone the repository- ✅ Shift mode control (eco/comfort/turbo)```
+# Clone this control center- 🎮 **Quick Presets** - Gaming, Balanced, and Silent modes with one click
 
-git clone https://github.com/YousefE1bana/msi-ec-for-msi-laptops.git
+git clone https://github.com/YousefE1bana/msi-ec-control-center.git
 
-cd msi-ec-for-msi-laptops- ✅ Quick presets (Gaming/Balanced/Silent)
+cd msi-ec-control-center- ⚙️ **Manual Controls** - Fine-tune fan mode, shift mode, and all hardware settings
 
 
 
-# Make executable- ✅ Cooler Boost toggle- `gui.py`: A simple PyQt6 GUI (MSI Control Center - Open Source Edition) for live monitoring and control.
+# Make executable- 💾 **Profile System** - Save and load your custom configurations
 
 chmod +x msi-ec-control
 
-- ✅ Super Battery mode
+- 📊 **Thermal Analysis** - 30-second monitoring with smart recommendations**Or use Desktop Shortcut:**
 
-# Run the control center
+# Run
 
-sudo ./msi-ec-control- ✅ Webcam enable/disable**GUI Application:**
+sudo ./msi-ec-control- 🎨 **Beautiful Interface** - Clean ASCII art with color-coded information
 
 ```
 
-- ✅ Windows Key enable/disable
+- 🚀 **Zero Dependencies** - Pure bash script, no Python or external libraries needed- Click **MSI EC Control** icon on desktop or in application menu**Simple Menu:**
 
-### Desktop Shortcut (Optional)
+### Full Install (Fresh Setup)
 
-- ✅ Keyboard backlight control (0-3 brightness levels)```bash### Desktop Shortcuts (Easiest)
+
+
+If you haven't installed the MSI EC kernel module yet:
+
+## 🎯 Quick Start
 
 ```bash
 
-# Install desktop launcher- ✅ Profile save/load system
+# Step 1: Install kernel module (our forked version)
+
+git clone https://github.com/YousefE1bana/msi-ec-for-msi-laptops.git
+
+cd msi-ec-for-msi-laptops### Prerequisites## ⚡ Features```bash
+
+make
+
+sudo insmod msi-ec.ko
+
+
+
+# Verify it's loaded1. MSI laptop with the [`msi-ec`](https://github.com/BeardOverflow/msi-ec) kernel module installed and loaded
+
+ls /sys/devices/platform/msi-ec/
+
+2. Root access (sudo)
+
+# Step 2: Install control center
+
+cd ~- ✅ Real-time temperature monitoring with color indicators & trend arrowssudo bin/msi-ec-menu## 🚀 Quick Start- `msi-ec-cli`: A command-line tool to read and set fan/performance-related properties.
+
+git clone https://github.com/YousefE1bana/msi-ec-control-center.git
+
+cd msi-ec-control-center### Installation
+
+chmod +x msi-ec-control
+
+sudo ./msi-ec-control- ✅ Fan mode control (auto/silent/advanced)
+
+```
+
+```bash
+
+> **📖 For detailed instructions, troubleshooting, and making the module load on boot, see [INSTALLATION.md](INSTALLATION.md)**
+
+# Clone the repository- ✅ Shift mode control (eco/comfort/turbo)```
+
+### Desktop Shortcut (Optional)
+
+git clone https://github.com/YousefE1bana/msi-ec-for-msi-laptops.git
+
+```bash
+
+# Install launchercd msi-ec-for-msi-laptops- ✅ Quick presets (Gaming/Balanced/Silent)
 
 cp config/msi-control-center.desktop ~/.local/share/applications/
 
-cp config/msi-control-center.desktop ~/Desktop/- ✅ 30-second thermal analysis with recommendations./msi-ec-gui
+cp config/msi-control-center.desktop ~/Desktop/
 
 chmod +x ~/Desktop/msi-control-center.desktop
 
-```- ✅ Real-time monitoring mode (auto-refresh every 2s)
+```# Make executable- ✅ Cooler Boost toggle- `gui.py`: A simple PyQt6 GUI (MSI Control Center - Open Source Edition) for live monitoring and control.
 
 
 
-## 📋 Menu Options- ✅ Action history log```Double-click either icon on your Desktop:Shared logic is in `msi_ec_utils.py`.
+## 📋 Menu Optionschmod +x msi-ec-control
 
 
 
-### Status & Monitoring
+### Status & Monitoring- ✅ Super Battery mode
 
 - **[1] View System Status** - Display all current settings and temperatures
 
-- **[2] Real-time Monitor** - Auto-refreshing status (Press 'S' to stop)## 📋 Requirements
+- **[2] Real-time Monitor** - Auto-refreshing status (Press 'S' to stop)# Run the control center
 
 - **[3] Thermal Analysis** - 30-second temperature monitoring with recommendations
 
-
+sudo ./msi-ec-control- ✅ Webcam enable/disable**GUI Application:**
 
 ### Quick Presets
 
-- **[4] Gaming Mode** - Maximum performance (Advanced fan + Turbo + Cooler Boost)- MSI laptop with `msi-ec` kernel module loaded**Desktop Shortcuts:**- **MSI Control Center** - Graphical interface with live monitoring
+- **[4] Gaming Mode** - Maximum performance (Advanced fan + Turbo + Cooler Boost)```
 
 - **[5] Balanced Mode** - Optimal balance (Auto fan + Comfort)
 
-- **[6] Silent Mode** - Quiet operation (Silent fan + Eco + Super Battery)- Root privileges (uses `sudo`)
+- **[6] Silent Mode** - Quiet operation (Silent fan + Eco + Super Battery)- ✅ Windows Key enable/disable
 
 
 
-### Manual Controls- Bash shell- Click **MSI Control Center** for GUI
+### Manual Controls### Desktop Shortcut (Optional)
 
 - **[7] Fan Control** - Set fan mode (auto/silent/advanced)
 
-- **[8] Shift Mode** - Set performance mode (eco/comfort/turbo)
+- **[8] Shift Mode** - Set performance mode (eco/comfort/turbo)- ✅ Keyboard backlight control (0-3 brightness levels)```bash### Desktop Shortcuts (Easiest)
 
 - **[9] Cooler Boost** - Toggle enhanced cooling
 
-- **[10] Super Battery** - Toggle battery saving mode## 🎯 Menu Structure (18 Options)- Click **MSI EC Control Menu** for terminal menu- **MSI EC Control CLI** - Advanced terminal with 16 optionsQuick start
+- **[10] Super Battery** - Toggle battery saving mode```bash
 
 - **[11] Webcam** - Enable/disable webcam
 
-- **[12] Windows Key** - Enable/disable Windows key
+- **[12] Windows Key** - Enable/disable Windows key# Install desktop launcher- ✅ Profile save/load system
 
 - **[13] Keyboard Backlight** - Set brightness (0-3)
 
-### Status & Monitoring
+cp config/msi-control-center.desktop ~/.local/share/applications/
 
 ### Profile Management
 
-- **[14] Save Profile** - Save current configuration1. **View System Status** - Display all current settings and temperatures
+- **[14] Save Profile** - Save current configurationcp config/msi-control-center.desktop ~/Desktop/- ✅ 30-second thermal analysis with recommendations./msi-ec-gui
 
 - **[15] Load Profile** - Restore saved configuration
 
-- **[16] List Profiles** - Show all saved profiles2. **Real-time Monitor** - Auto-refreshing status display (Ctrl+C to exit)## 📁 Project Structure-----------
+- **[16] List Profiles** - Show all saved profileschmod +x ~/Desktop/msi-control-center.desktop
 
 
 
-### Other3. **Run Thermal Analysis** - 30-second temperature monitoring with recommendations
+### Other```- ✅ Real-time monitoring mode (auto-refresh every 2s)
 
 - **[17] History** - View recent actions
 
@@ -170,93 +222,301 @@ chmod +x ~/Desktop/msi-control-center.desktop
 
 
 
+## 🖥️ Screenshots## 📋 Menu Options- ✅ Action history log```Double-click either icon on your Desktop:Shared logic is in `msi_ec_utils.py`.
+
+
+
+### Main Menu
+
+```
+
+ __  __ ____ ___   _____ ____    ____            _             _ ### Status & Monitoring
+
+|  \/  / ___|_ _| | ____/ ___|  / ___|___  _ __ | |_ _ __ ___ | |
+
+| |\/| \___ \| |  |  _|| |     | |   / _ \| '_ \| __| '__/ _ \| |- **[1] View System Status** - Display all current settings and temperatures
+
+| |  | |___) | |  | |__| |___  | |__| (_) | | | | |_| | | (_) | |
+
+|_|  |_|____/___| |_____\____|  \____\___/|_| |_|\__|_|  \___/|_|- **[2] Real-time Monitor** - Auto-refreshing status (Press 'S' to stop)## 📋 Requirements
+
+============================================================
+
+[*] Yousef Osama - Cybersecurity Engineering Student- **[3] Thermal Analysis** - 30-second temperature monitoring with recommendations
+
+============================================================
+
+```
+
+
+
+### System Status### Quick Presets
+
+- Color-coded temperatures (Green/Yellow/Red)
+
+- Trend indicators (↑↓→)- **[4] Gaming Mode** - Maximum performance (Advanced fan + Turbo + Cooler Boost)- MSI laptop with `msi-ec` kernel module loaded**Desktop Shortcuts:**- **MSI Control Center** - Graphical interface with live monitoring
+
+- Visual temperature bars
+
+- All hardware settings displayed- **[5] Balanced Mode** - Optimal balance (Auto fan + Comfort)
+
+
+
+## 📦 Project Structure- **[6] Silent Mode** - Quiet operation (Silent fan + Eco + Super Battery)- Root privileges (uses `sudo`)
+
+
+
+```
+
+msi-ec-control-center/
+
+├── msi-ec-control              # Main executable (all-in-one script)### Manual Controls- Bash shell- Click **MSI Control Center** for GUI
+
+├── INSTALLATION.md             # Complete installation guide
+
+├── config/- **[7] Fan Control** - Set fan mode (auto/silent/advanced)
+
+│   └── msi-control-center.desktop
+
+├── docs/- **[8] Shift Mode** - Set performance mode (eco/comfort/turbo)
+
+│   ├── LICENSE
+
+│   └── README.md- **[9] Cooler Boost** - Toggle enhanced cooling
+
+└── README.md
+
+```- **[10] Super Battery** - Toggle battery saving mode## 🎯 Menu Structure (18 Options)- Click **MSI EC Control Menu** for terminal menu- **MSI EC Control CLI** - Advanced terminal with 16 optionsQuick start
+
+
+
+## 🔧 Available Settings- **[11] Webcam** - Enable/disable webcam
+
+
+
+### Fan Modes- **[12] Windows Key** - Enable/disable Windows key
+
+- `auto` - Automatic fan control based on temperature
+
+- `silent` - Quiet operation with lower RPM- **[13] Keyboard Backlight** - Set brightness (0-3)
+
+- `advanced` - Maximum cooling performance
+
+### Status & Monitoring
+
+### Shift Modes
+
+- `eco` - Power saving mode (lower performance)### Profile Management
+
+- `comfort` - Balanced performance and efficiency
+
+- `turbo` - Maximum performance mode- **[14] Save Profile** - Save current configuration1. **View System Status** - Display all current settings and temperatures
+
+
+
+### Toggles- **[15] Load Profile** - Restore saved configuration
+
+- **Cooler Boost** - Enhanced cooling (on/off)
+
+- **Super Battery** - Battery saving mode (on/off)- **[16] List Profiles** - Show all saved profiles2. **Real-time Monitor** - Auto-refreshing status display (Ctrl+C to exit)## 📁 Project Structure-----------
+
+- **Webcam** - Camera enable/disable (on/off)
+
+- **Windows Key** - Windows key functionality (left=enabled/right=disabled)
+
+- **Keyboard Backlight** - Brightness levels (0=off, 1=low, 2=medium, 3=high)
+
+### Other3. **Run Thermal Analysis** - 30-second temperature monitoring with recommendations
+
+## 💡 Usage Examples
+
+- **[17] History** - View recent actions
+
+### Quick Gaming Setup
+
+```bash- **[18] Exit** - Close application
+
+sudo ./msi-ec-control
+
+# Select [4] Gaming Mode
+
+```
+
 ## 🖥️ Screenshots### Quick Presets
 
+### Save Your Configuration
 
+```bash
 
-### Main Menu4. **Gaming Mode** - Advanced fan + Turbo shift + Cooler Boost ON```### Command Line
+sudo ./msi-ec-control
+
+# Configure your settings manually### Main Menu4. **Gaming Mode** - Advanced fan + Turbo shift + Cooler Boost ON```### Command Line
+
+# Select [14] Save Profile
+
+# Enter profile name: "my-gaming-profile"```
 
 ```
 
  __  __ ____ ___   _____ ____    ____            _             _ 5. **Balanced Mode** - Auto fan + Comfort shift
 
-|  \/  / ___|_ _| | ____/ ___|  / ___|___  _ __ | |_ _ __ ___ | |
+### Monitor Temperatures in Real-time
 
-| |\/| \___ \| |  |  _|| |     | |   / _ \| '_ \| __| '__/ _ \| |6. **Silent Mode** - Silent fan + Eco shift + Super Battery ON├── bin/          # Executable scripts (menu, advanced CLI, etc.)
+```bash|  \/  / ___|_ _| | ____/ ___|  / ___|___  _ __ | |_ _ __ ___ | |
 
-| |  | |___) | |  | |__| |___  | |__| (_) | | | | |_| | | (_) | |
+sudo ./msi-ec-control
 
-|_|  |_|____/___| |_____\____|  \____\___/|_| |_|\__|_|  \___/|_|
+# Select [2] Real-time Monitor| |\/| \___ \| |  |  _|| |     | |   / _ \| '_ \| __| '__/ _ \| |6. **Silent Mode** - Silent fan + Eco shift + Super Battery ON├── bin/          # Executable scripts (menu, advanced CLI, etc.)
 
-============================================================
+# Press 'S' to stop monitoring
 
-[*] Yousef Osama - Cybersecurity Engineering Student### Manual Controls├── src/          # Python source (GUI, utilities)```bash**Note for Kali Linux users:** This project uses a virtual environment (venv) to avoid conflicts with system Python packages.
-
-============================================================
-
-```7. **Change Fan Mode** - Select from available fan modes
+```| |  | |___) | |  | |__| |___  | |__| (_) | | | | |_| | | (_) | |
 
 
 
-### System Status8. **Change Shift Mode** - Select from available shift modes├── config/       # Desktop integration files
-
-- Color-coded temperatures (Green/Yellow/Red)
-
-- Trend indicators (↑↓→)9. **Toggle Cooler Boost** - Enhanced cooling on/off
-
-- Visual temperature bars
-
-- All hardware settings displayed10. **Toggle Super Battery** - Battery saving mode on/off├── docs/         # Full documentation and license# GUI (graphical interface)
+## 🛠️ Troubleshooting|_|  |_|____/___| |_____\____|  \____\___/|_| |_|\__|_|  \___/|_|
 
 
 
-## 📦 Project Structure11. **Toggle Webcam** - Enable/disable webcam
+### "MSI EC module not found" error============================================================
 
 
 
-```12. **Toggle Windows Key** - Enable (left) / Disable (right)└── venv/         # Python virtual environment
+The kernel module isn't loaded. See [INSTALLATION.md](INSTALLATION.md) for setup instructions.[*] Yousef Osama - Cybersecurity Engineering Student### Manual Controls├── src/          # Python source (GUI, utilities)```bash**Note for Kali Linux users:** This project uses a virtual environment (venv) to avoid conflicts with system Python packages.
 
-msi-ec-control/
 
-├── msi-ec-control              # Main executable (all-in-one)13. **Set Keyboard Backlight** - Brightness levels 0-3
 
-├── config/
+```bash============================================================
 
-│   └── msi-control-center.desktop```./run-gui-sudo.sh1. Ensure the `msi-ec` kernel module is loaded and that `/sys/devices/platform/msi-ec` exists.
+# Check if module is loaded
 
-├── docs/
+lsmod | grep msi_ec```7. **Change Fan Mode** - Select from available fan modes
 
-│   ├── LICENSE### Profile Management
 
-│   └── README.md
 
-└── README.md14. **Save Current as Profile** - Save all current settings
+# Check if sysfs path exists
+
+ls /sys/devices/platform/msi-ec
+
+```### System Status8. **Change Shift Mode** - Select from available shift modes├── config/       # Desktop integration files
+
+
+
+### Permission Denied- Color-coded temperatures (Green/Yellow/Red)
+
+
+
+Always run with sudo:- Trend indicators (↑↓→)9. **Toggle Cooler Boost** - Enhanced cooling on/off
+
+```bash
+
+sudo ./msi-ec-control- Visual temperature bars
 
 ```
 
+- All hardware settings displayed10. **Toggle Super Battery** - Battery saving mode on/off├── docs/         # Full documentation and license# GUI (graphical interface)
+
+### Settings Not Applying
+
+
+
+- Some features may not be available on all MSI laptop models
+
+- Check kernel module logs: `dmesg | grep msi-ec`## 📦 Project Structure11. **Toggle Webcam** - Enable/disable webcam
+
+- Verify your laptop is supported by the msi-ec module
+
+
+
+## 🤝 Contributing
+
+```12. **Toggle Windows Key** - Enable (left) / Disable (right)└── venv/         # Python virtual environment
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+msi-ec-control/
+
+1. Fork the repository
+
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)├── msi-ec-control              # Main executable (all-in-one)13. **Set Keyboard Backlight** - Brightness levels 0-3
+
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+
+4. Push to the branch (`git push origin feature/AmazingFeature`)├── config/
+
+5. Open a Pull Request
+
+│   └── msi-control-center.desktop```./run-gui-sudo.sh1. Ensure the `msi-ec` kernel module is loaded and that `/sys/devices/platform/msi-ec` exists.
+
+## 📜 License
+
+├── docs/
+
+This project is licensed under the MIT License - see the [LICENSE](docs/LICENSE) file for details.
+
+│   ├── LICENSE### Profile Management
+
+## 🙏 Acknowledgments
+
+│   └── README.md
+
+- **MSI EC Kernel Module** - [BeardOverflow/msi-ec](https://github.com/BeardOverflow/msi-ec)
+
+- **Our Forked Module** - [YousefE1bana/msi-ec-for-msi-laptops](https://github.com/YousefE1bana/msi-ec-for-msi-laptops)└── README.md14. **Save Current as Profile** - Save all current settings
+
+- Thanks to all MSI laptop users who contributed to the kernel module development
+
+```
+
+## 👤 Author
+
 15. **Load Profile** - Restore saved settings
 
-## 🔧 Available Settings
+**Yousef Osama (YousefE1bana)**
+
+- Cybersecurity Engineering Student at Egyptian Chinese University## 🔧 Available Settings
+
+- GitHub: [@YousefE1bana](https://github.com/YousefE1bana)
 
 16. **List Profiles** - Show all available profiles## 📖 Full Documentation
 
+## 🌟 Show Your Support
+
 ### Fan Modes
+
+Give a ⭐️ if this project helped you control your MSI laptop!
 
 - `auto` - Automatic fan control based on temperature
 
+## 📞 Support
+
 - `silent` - Quiet operation with lower RPM
 
-- `advanced` - Maximum cooling performance### Other
+For issues, questions, or suggestions:
+
+- **Control Center**: [GitHub Issues](https://github.com/YousefE1bana/msi-ec-control-center/issues)- `advanced` - Maximum cooling performance### Other
+
+- **Kernel Module**: [Module Issues](https://github.com/YousefE1bana/msi-ec-for-msi-laptops/issues)
+
+- **Original MSI EC**: [BeardOverflow/msi-ec](https://github.com/BeardOverflow/msi-ec)
 
 
 
-### Shift Modes17. **View History** - Show last 20 actions
+## 🔗 Related Projects### Shift Modes17. **View History** - Show last 20 actions
 
-- `eco` - Power saving mode (lower performance)
+
+
+- **MSI EC Kernel Module (Forked)**: [msi-ec-for-msi-laptops](https://github.com/YousefE1bana/msi-ec-for-msi-laptops)- `eco` - Power saving mode (lower performance)
+
+- **Original MSI EC Module**: [BeardOverflow/msi-ec](https://github.com/BeardOverflow/msi-ec)
 
 - `comfort` - Balanced performance and efficiency18. **Exit** - Close the applicationSee **[docs/README.md](docs/README.md)** for complete documentation including:# Advanced CLI (terminal menu)2. The virtual environment is already set up with dependencies installed. Use the launcher scripts:
 
+---
+
 - `turbo` - Maximum performance mode
+
+**Made with ❤️ for MSI laptop users**
 
 
 
