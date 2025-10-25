@@ -1,152 +1,77 @@
-# MSI EC Control Center# MSI EC Control Center# MSI EC Control# MSI EC Control# MSI EC Control - Complete Laptop Control Suite# MSI EC Control (open-source)
-
-
+# MSI EC Control Center
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 [![Bash](https://img.shields.io/badge/bash-5.0%2B-green.svg)](https://www.gnu.org/software/bash/)
+[![MSI EC](https://img.shields.io/badge/MSI--EC-kernel%20module-blue.svg)](https://github.com/BeardOverflow/msi-ec)
 
-[![MSI EC](https://img.shields.io/badge/MSI--EC-kernel%20module-blue.svg)](https://github.com/BeardOverflow/msi-ec)[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+A complete, feature-rich control center for MSI laptops using the `msi-ec` kernel module. Single-file bash script with no dependencies - control your MSI laptop's performance, fans, and settings with an intuitive terminal interface.
 
-
-
-A complete, feature-rich control center for MSI laptops using the `msi-ec` kernel module. Single-file bash script with no dependencies - control your MSI laptop's performance, fans, and settings with an intuitive terminal interface.[![Bash](https://img.shields.io/badge/bash-5.0%2B-green.svg)](https://www.gnu.org/software/bash/)
-
-
-
-```[![MSI EC](https://img.shields.io/badge/MSI--EC-kernel%20module-blue.svg)](https://github.com/BeardOverflow/msi-ec)Complete control center for MSI laptops using the `msi-ec` kernel module.
-
+```
  __  __ ____ ___   _____ ____    ____            _             _ 
-
 |  \/  / ___|_ _| | ____/ ___|  / ___|___  _ __ | |_ _ __ ___ | |
-
 | |\/| \___ \| |  |  _|| |     | |   / _ \| '_ \| __| '__/ _ \| |
-
-| |  | |___) | |  | |__| |___  | |__| (_) | | | | |_| | | (_) | |A complete, feature-rich control center for MSI laptops using the `msi-ec` kernel module. Single-file bash script with no dependencies - control your MSI laptop's performance, fans, and settings with an intuitive terminal interface.
-
+| |  | |___) | |  | |__| |___  | |__| (_) | | | | |_| | | (_) | |
 |_|  |_|____/___| |_____\____|  \____\___/|_| |_|\__|_|  \___/|_|
-
 ```
 
+## ✨ Features
 
-
-## ✨ Features```## 🚀 Quick StartProfessional control center for MSI laptops using the `msi-ec` kernel module.
-
-
-
-- 🌡️ **Real-time Monitoring** - Live temperature and fan speed tracking with color indicators __  __ ____ ___   _____ ____    ____            _             _ 
-
+- 🌡️ **Real-time Monitoring** - Live temperature and fan speed tracking with color indicators
 - 🎮 **Quick Presets** - Gaming, Balanced, and Silent modes with one click
-
-- ⚙️ **Manual Controls** - Fine-tune fan mode, shift mode, and all hardware settings|  \/  / ___|_ _| | ____/ ___|  / ___|___  _ __ | |_ _ __ ___ | |
-
+- ⚙️ **Manual Controls** - Fine-tune fan mode, shift mode, and all hardware settings
 - 💾 **Profile System** - Save and load your custom configurations
-
-- 📊 **Thermal Analysis** - 30-second monitoring with smart recommendations| |\/| \___ \| |  |  _|| |     | |   / _ \| '_ \| __| '__/ _ \| |
-
+- 📊 **Thermal Analysis** - 30-second monitoring with smart recommendations
 - 🎨 **Beautiful Interface** - Clean ASCII art with color-coded information
-
-- 🚀 **Zero Dependencies** - Pure bash script, no Python or external libraries needed| |  | |___) | |  | |__| |___  | |__| (_) | | | | |_| | | (_) | |**Run the control center:**
-
-
-
-## 🎯 Quick Start|_|  |_|____/___| |_____\____|  \____\___/|_| |_|\__|_|  \___/|_|
-
-
-
-### Prerequisites``````bash
-
-
-
-1. MSI laptop with the `msi-ec` kernel module installed and loaded
-
-2. Root access (sudo)
-
-## ✨ Featuressudo ./msi-ec-control## 🚀 Quick StartControl your MSI laptop's fan, performance modes, and monitor temperatures using the `msi-ec` kernel module.This small project provides two frontends for controlling MSI laptops via the `msi-ec` kernel module:
-
-> **📖 New to MSI EC?** See our complete [INSTALLATION.md](INSTALLATION.md) guide for step-by-step instructions on installing both the kernel module and control center.
-
-
-
-### Quick Install (Module Already Installed)
-
-- 🌡️ **Real-time Monitoring** - Live temperature and fan speed tracking with color indicators```
-
-```bash
-
-# Clone this control center- 🎮 **Quick Presets** - Gaming, Balanced, and Silent modes with one click
-
-git clone https://github.com/YousefE1bana/msi-ec-control-center.git
-
-cd msi-ec-control-center- ⚙️ **Manual Controls** - Fine-tune fan mode, shift mode, and all hardware settings
-
-
-
-# Make executable- 💾 **Profile System** - Save and load your custom configurations
-
-chmod +x msi-ec-control
-
-- 📊 **Thermal Analysis** - 30-second monitoring with smart recommendations**Or use Desktop Shortcut:**
-
-# Run
-
-sudo ./msi-ec-control- 🎨 **Beautiful Interface** - Clean ASCII art with color-coded information
-
-```
-
-- 🚀 **Zero Dependencies** - Pure bash script, no Python or external libraries needed- Click **MSI EC Control** icon on desktop or in application menu**Simple Menu:**
-
-### Full Install (Fresh Setup)
-
-
-
-If you haven't installed the MSI EC kernel module yet:
+- 🚀 **Zero Dependencies** - Pure bash script, no Python or external libraries needed
 
 ## 🎯 Quick Start
 
-```bash
+### Prerequisites
 
-# Step 1: Install kernel module (our forked version)
-
-git clone https://github.com/YousefE1bana/msi-ec-for-msi-laptops.git
-
-cd msi-ec-for-msi-laptops### Prerequisites## ⚡ Features```bash
-
-make
-
-sudo insmod msi-ec.ko
-
-
-
-# Verify it's loaded1. MSI laptop with the [`msi-ec`](https://github.com/BeardOverflow/msi-ec) kernel module installed and loaded
-
-ls /sys/devices/platform/msi-ec/
-
+1. MSI laptop with the `msi-ec` kernel module installed and loaded
 2. Root access (sudo)
 
-# Step 2: Install control center
+> **📖 New to MSI EC?** See our complete [INSTALLATION.md](INSTALLATION.md) guide for step-by-step instructions on installing both the kernel module and control center.
 
-cd ~- ✅ Real-time temperature monitoring with color indicators & trend arrowssudo bin/msi-ec-menu## 🚀 Quick Start- `msi-ec-cli`: A command-line tool to read and set fan/performance-related properties.
-
-git clone https://github.com/YousefE1bana/msi-ec-control-center.git
-
-cd msi-ec-control-center### Installation
-
-chmod +x msi-ec-control
-
-sudo ./msi-ec-control- ✅ Fan mode control (auto/silent/advanced)
-
-```
+### Quick Install (Module Already Installed)
 
 ```bash
+# Clone this control center
+git clone https://github.com/YousefE1bana/msi-ec-cli-for-msi-laptops.git
+cd msi-ec-cli-for-msi-laptops
+
+# Make executable
+chmod +x msi-ec-control
+
+# Run
+sudo ./msi-ec-control
+```
+
+### Full Install (Fresh Setup)
+
+If you haven't installed the MSI EC kernel module yet:
+
+```bash
+# Step 1: Install kernel module (our forked version)
+git clone https://github.com/YousefE1bana/msi-ec-for-msi-laptops.git
+cd msi-ec-for-msi-laptops
+make
+sudo insmod msi-ec.ko
+
+# Verify it's loaded
+ls /sys/devices/platform/msi-ec/
+
+# Step 2: Install control center
+cd ~
+git clone https://github.com/YousefE1bana/msi-ec-cli-for-msi-laptops.git
+cd msi-ec-cli-for-msi-laptops
+chmod +x msi-ec-control
+sudo ./msi-ec-control
+```
 
 > **📖 For detailed instructions, troubleshooting, and making the module load on boot, see [INSTALLATION.md](INSTALLATION.md)**
 
-# Clone the repository- ✅ Shift mode control (eco/comfort/turbo)```
-
 ### Desktop Shortcut (Optional)
-
-git clone https://github.com/YousefE1bana/msi-ec-for-msi-laptops.git
 
 ```bash
 
