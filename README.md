@@ -23,20 +23,6 @@ A complete, feature-rich control center for MSI laptops using the `msi-ec` kerne
 - 📊 **Thermal Analysis** - 30-second monitoring with smart recommendations
 - 🎨 **Beautiful Interface** - Clean ASCII art with color-coded information
 - 🚀 **Zero Dependencies** - Pure bash script, no Python or external libraries needed
-- 🛠️ **Easy Installation** - Automated install script with validation tools
-- 📖 **Command-Line Help** - Built-in `--help` and `--version` flags
-- ✅ **System Validation** - Check your setup with `validate-setup.sh`
-
-## 🆕 What's New in v2.0.0
-
-- ✅ Added `--help` and `--version` command-line flags
-- ✅ Fixed desktop shortcut for all users (removed hardcoded path)
-- ✅ New `install.sh` script for automated installation
-- ✅ New `validate-setup.sh` script to diagnose system status
-- ✅ Comprehensive FAQ section in README
-- ✅ CHANGELOG.md with version history
-- ✅ CONTRIBUTING.md guide for contributors
-- ✅ Semantic versioning (now v2.0.0)
 
 ## 🎯 Quick Start
 
@@ -54,43 +40,11 @@ A complete, feature-rich control center for MSI laptops using the `msi-ec` kerne
 git clone https://github.com/YousefE1bana/msi-ec-cli-for-msi-laptops.git
 cd msi-ec-cli-for-msi-laptops
 
-# Recommended: Use the installer script
-./install.sh
-
-# Or manually:
+# Make executable
 chmod +x msi-ec-control
+
+# Run
 sudo ./msi-ec-control
-```
-
-### Easy Install with Script
-
-The project now includes an installation script that automates setup:
-
-```bash
-# Run the installer
-./install.sh
-
-# It will:
-# - Check if msi-ec module is loaded
-# - Install script to ~/.local/bin
-# - Create desktop shortcut
-# - Set up everything automatically
-```
-
-### Validate Your Setup
-
-After installation, verify everything works:
-
-```bash
-# Run the validation script
-./validate-setup.sh
-
-# It checks:
-# - Kernel module status
-# - sysfs interface availability
-# - Temperature sensors
-# - Fan controls
-# - Script installation
 ```
 
 ### Full Install (Fresh Setup)
@@ -1094,122 +1048,6 @@ KNOWN_FILES = {
     # Add your custom paths here
 }
 ```
-
-## ❓ Frequently Asked Questions (FAQ)
-
-### General Questions
-
-**Q: Which MSI laptop models are supported?**
-A: Any MSI laptop model supported by the msi-ec kernel module. Check the [compatibility list](https://github.com/BeardOverflow/msi-ec#compatibility) or test if `/sys/devices/platform/msi-ec` exists after loading the module.
-
-**Q: Does this work on Windows?**
-A: No, this is Linux-only. For Windows, use MSI Dragon Center or MSI Center.
-
-**Q: Do I need to run this every time I boot?**
-A: No, but settings reset after reboot. You can load a saved profile on startup or set up a systemd service to apply your preferred settings automatically.
-
-**Q: Will this void my warranty?**
-A: Using open-source software doesn't void warranties. However, be careful with hardware settings and don't set extreme configurations.
-
-### Installation Questions
-
-**Q: How do I know if the msi-ec module is installed?**
-A: Run `lsmod | grep msi_ec`. If you see output, it's loaded. Also check if `/sys/devices/platform/msi-ec` exists.
-
-**Q: The module won't load on my laptop**
-A: Your laptop might not be supported. Check `dmesg | grep msi-ec` for errors. Visit the [MSI EC kernel module](https://github.com/BeardOverflow/msi-ec) for compatibility info.
-
-**Q: Can I install this system-wide?**
-A: Yes! Run `./install.sh` which copies the script to `~/.local/bin` and creates a desktop shortcut. Or manually copy to `/usr/local/bin`.
-
-### Usage Questions
-
-**Q: Can I use this without sudo?**
-A: Reading values works without sudo, but writing (changing settings) requires root access. You can set up udev rules for passwordless access (see CONTRIBUTING.md).
-
-**Q: What's the difference between fan modes?**
-A:
-- **Auto**: Automatic fan control based on temperature
-- **Silent**: Quiet operation with lower fan speeds
-- **Advanced**: Maximum cooling with higher fan speeds
-
-**Q: What's the difference between shift modes?**
-A:
-- **Eco**: Power saving (lower performance, better battery)
-- **Comfort**: Balanced performance and efficiency
-- **Turbo**: Maximum performance (higher power consumption)
-
-**Q: How do I create a profile?**
-A: Configure your desired settings in the menu, then select option [14] "Save Profile" and give it a name. Load it anytime with option [15].
-
-**Q: Can I use this in scripts?**
-A: Yes! Use the command-line flags:
-```bash
-./msi-ec-control --version    # Check version
-./msi-ec-control --help       # See options
-```
-
-### Troubleshooting Questions
-
-**Q: My temperatures show as "N/A"**
-A: Check if your laptop's temperature sensors are supported by the msi-ec module. Run `validate-setup.sh` to diagnose.
-
-**Q: Settings don't apply / nothing happens**
-A:
-1. Ensure you're running with sudo
-2. Check `dmesg | grep msi-ec` for errors
-3. Verify your laptop model supports the feature
-4. Run `./validate-setup.sh` to check system status
-
-**Q: The desktop shortcut doesn't work**
-A:
-1. Make sure the script is installed: run `./install.sh`
-2. Right-click the desktop icon and select "Trust" or "Allow Launching"
-3. Check that the path in the .desktop file is correct
-
-**Q: Fan speeds show as 0 or incorrect values**
-A: Some laptop models may not report fan speeds accurately through the msi-ec interface. This is a hardware/module limitation.
-
-**Q: After kernel update, the module doesn't work**
-A: Kernel modules need to be rebuilt after kernel updates. Reinstall the msi-ec module:
-```bash
-cd ~/msi-ec-for-msi-laptops
-make clean && make
-sudo insmod msi-ec.ko
-```
-
-### Safety Questions
-
-**Q: Is it safe to use?**
-A: Yes, it interfaces with the official msi-ec kernel module. However, always be cautious with hardware settings. Don't push settings to extremes.
-
-**Q: Can I damage my laptop with this?**
-A: The kernel module has safety limits built in. However, use common sense - don't disable cooling while gaming or force maximum performance constantly.
-
-**Q: What if I set something wrong?**
-A: Most settings reset to defaults after a reboot. If system becomes unstable, reboot your laptop.
-
-### Feature Requests
-
-**Q: Can you add GUI support?**
-A: A simple GUI could be added in the future. Contributions welcome! See CONTRIBUTING.md.
-
-**Q: Can you add support for [specific feature]?**
-A: Feature support depends on the msi-ec kernel module. If the kernel module supports it, we can add it. Open an issue on GitHub.
-
-**Q: Will you support other laptop brands?**
-A: This project is specifically for MSI laptops using the msi-ec module. Other brands would need their own kernel modules.
-
-### Getting Help
-
-**Q: Where can I get more help?**
-A:
-1. Run `./validate-setup.sh` to diagnose issues
-2. Check the [GitHub Issues](https://github.com/YousefE1bana/msi-ec-cli-for-msi-laptops/issues)
-3. Read INSTALLATION.md for setup help
-4. Check the [msi-ec kernel module documentation](https://github.com/BeardOverflow/msi-ec)
-
----
 
 ## 📜 License
 
