@@ -2,58 +2,10 @@
 # ==========================================
 #  MSI EC Control - Advanced Edition
 #  Author: Yousef Osama (Enhanced by AI)
-#  Version: 2.0.0
+#  Version: 2.0
 # ==========================================
 
-VERSION="2.0.0"
-
 set -euo pipefail
-
-# --- Help and Version ---
-show_help() {
-    cat <<EOF
-MSI EC Control Center v$VERSION
-Control your MSI laptop hardware settings
-
-Usage: msi-ec-control [OPTIONS]
-
-Options:
-    --help, -h          Show this help message
-    --version, -v       Show version information
-    --status            Display current system status (coming soon)
-    (no options)        Show interactive menu (default)
-
-Features:
-    • Real-time temperature monitoring with color indicators
-    • Quick presets (Gaming, Balanced, Silent modes)
-    • Manual controls for fan mode and shift mode
-    • Profile save/load system
-    • 30-second thermal analysis
-    • Hardware toggles (Cooler Boost, Webcam, etc.)
-
-Examples:
-    sudo msi-ec-control              # Interactive menu
-    sudo msi-ec-control --help       # Show this help
-    sudo msi-ec-control --version    # Show version
-
-Requirements:
-    • MSI laptop with msi-ec kernel module loaded
-    • Root/sudo access for hardware control
-
-For more information, see: README.md
-EOF
-}
-
-# Handle command-line arguments
-if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
-    show_help
-    exit 0
-fi
-
-if [ "${1:-}" = "--version" ] || [ "${1:-}" = "-v" ]; then
-    echo "MSI EC Control v$VERSION"
-    exit 0
-fi
 
 EC_PATH="/sys/devices/platform/msi-ec"
 CONFIG_DIR="$HOME/.config/msi-ec-control"
