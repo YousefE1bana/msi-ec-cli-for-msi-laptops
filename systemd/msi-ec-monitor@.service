@@ -1,0 +1,27 @@
+[Unit]
+Description=MSI EC Temperature Monitor
+Documentation=https://github.com/YousefE1bana/msi-ec-cli-for-msi-laptops
+After=multi-user.target
+Requires=systemd-modules-load.service
+
+[Service]
+Type=simple
+User=%i
+ExecStart=/usr/local/bin/msi-ec-monitor
+Restart=on-failure
+RestartSec=10s
+
+# Environment
+Environment="DISPLAY=:0"
+Environment="DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/%U/bus"
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/sys/devices/platform/msi-ec
+ReadOnlyPaths=/sys/devices/platform/msi-ec
+
+[Install]
+WantedBy=multi-user.target

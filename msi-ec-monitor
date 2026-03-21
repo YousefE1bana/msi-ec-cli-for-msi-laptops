@@ -1,0 +1,98 @@
+#!/bin/bash
+# ==========================================
+#  MSI EC Monitor - Background Service
+#  Author: Yousef Osama
+#  Version: 1.0
+# ==========================================
+#
+# This script runs as a background service to monitor
+# temperatures and send notifications when thresholds
+# are exceeded.
+
+set -euo pipefail
+
+EC_PATH="/sys/devices/platform/msi-ec"
+CONFIG_DIR="$HOME/.config/msi-ec-control"
+CONFIG_FILE="$CONFIG_DIR/config.conf"
+LOG_FILE="$CONFIG_DIR/monitor.log"
+
+# Default values
+TEMP_CRITICAL=85
+TEMP_HIGH=75
+CHECK_INTERVAL=30
+ENABLE_NOTIFICATIONS=true
+
+# Load configuration
+if [ -f "$CONFIG_FILE" ]; then
+    source "$CONFIG_FILE"
+fi
+
+# Logging function
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$LOG_FILE"
+}
+
+# Read temperature
+get_temp() {
+    local temp_file="$1"
+    if [ -f "$temp_file" ]; then
+        cat "$temp_file" 2>/dev/null || echo "0"
+    else
+        echo "0"
+    fi
+}
+
+# Send notification
+notify() {
+    local title="$1"
+    local message="$2"
+    local urgency="${3:-normal}"
+
+    if [ "$ENABLE_NOTIFICATIONS" = "true" ] && command -v notify-send &> /dev/null; then
+        notify-send -u "$urgency" -i dialog-warning "$title" "$message"
+    fi
+}
+
+# Track warning state to avoid spam
+declare -A warned
+
+# Main monitoring loop
+log "MSI EC Monitor started"
+
+while true; do
+    # Check CPU temperature
+    cpu_temp=$(get_temp "$EC_PATH/cpu/realtime_temperature")
+
+    # Check GPU temperature
+    gpu_temp=$(get_temp "$EC_PATH/gpu/realtime_temperature")
+
+    # CPU critical warning
+    if [ "$cpu_temp" -ge "$TEMP_CRITICAL" ] && [ "${warned[cpu_critical]:-0}" = "0" ]; then
+        log "WARNING: CPU temperature critical: ${cpu_temp}°C"
+        notify "⚠️ MSI Laptop Alert" "CPU temperature is critical: ${cpu_temp}°C\nConsider enabling Cooler Boost!" "critical"
+        warned[cpu_critical]=1
+    elif [ "$cpu_temp" -lt "$TEMP_CRITICAL" ]; then
+        warned[cpu_critical]=0
+    fi
+
+    # GPU critical warning
+    if [ "$gpu_temp" -ge "$TEMP_CRITICAL" ] && [ "${warned[gpu_critical]:-0}" = "0" ]; then
+        log "WARNING: GPU temperature critical: ${gpu_temp}°C"
+        notify "⚠️ MSI Laptop Alert" "GPU temperature is critical: ${gpu_temp}°C" "critical"
+        warned[gpu_critical]=1
+    elif [ "$gpu_temp" -lt "$TEMP_CRITICAL" ]; then
+        warned[gpu_critical]=0
+    fi
+
+    # CPU high warning (only once per session)
+    if [ "$cpu_temp" -ge "$TEMP_HIGH" ] && [ "$cpu_temp" -lt "$TEMP_CRITICAL" ] && [ "${warned[cpu_high]:-0}" = "0" ]; then
+        log "INFO: CPU temperature high: ${cpu_temp}°C"
+        notify "MSI Laptop" "CPU temperature is high: ${cpu_temp}°C" "normal"
+        warned[cpu_high]=1
+    elif [ "$cpu_temp" -lt "$TEMP_HIGH" ]; then
+        warned[cpu_high]=0
+    fi
+
+    # Sleep before next check
+    sleep "$CHECK_INTERVAL"
+done

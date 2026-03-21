@@ -1,8 +1,13 @@
 # User config
 .config/
+*.conf
+!config.conf.example
 
 # Logs
 *.log
+
+# Profiles (user-specific)
+profiles/
 
 # OS
 .DS_Store
@@ -18,3 +23,7 @@ Thumbs.db
 # Backup files
 *.bak
 *~
+
+# Temporary files
+*.tmp
+temp/

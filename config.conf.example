@@ -1,0 +1,138 @@
+# MSI EC Control Center - Configuration File
+# Location: ~/.config/msi-ec-control/config.conf
+#
+# This file allows you to customize the behavior of MSI EC Control
+# without modifying the main script.
+#
+# After changing values, restart the control center for changes to take effect.
+
+# ============================================
+# Temperature Thresholds (in Celsius)
+# ============================================
+
+# Critical temperature - triggers warnings and alerts
+TEMP_CRITICAL=85
+
+# High temperature - shown in yellow/bold
+TEMP_HIGH=75
+
+# Normal temperature threshold - shown in yellow
+TEMP_NORMAL=60
+
+# ============================================
+# Monitoring Settings
+# ============================================
+
+# Real-time monitoring refresh interval (seconds)
+MONITOR_REFRESH_INTERVAL=2
+
+# Thermal analysis duration (seconds)
+THERMAL_ANALYSIS_DURATION=30
+
+# Thermal analysis sample count
+THERMAL_ANALYSIS_SAMPLES=15
+
+# ============================================
+# History & Logging
+# ============================================
+
+# Maximum number of history entries to keep
+MAX_HISTORY=100
+
+# Enable verbose logging (true/false)
+VERBOSE_LOGGING=false
+
+# ============================================
+# Desktop Notifications
+# ============================================
+
+# Enable desktop notifications (requires notify-send)
+ENABLE_NOTIFICATIONS=true
+
+# Show notifications for temperature warnings
+NOTIFY_ON_TEMP_WARNING=true
+
+# Show notifications for mode changes
+NOTIFY_ON_MODE_CHANGE=true
+
+# Show notifications for profile load/save
+NOTIFY_ON_PROFILE_CHANGE=true
+
+# Notification urgency level (low, normal, critical)
+NOTIFICATION_URGENCY=normal
+
+# ============================================
+# Auto-Profile Settings
+# ============================================
+
+# Enable auto-loading of default profile on startup
+AUTO_LOAD_PROFILE=false
+
+# Default profile name to auto-load (if AUTO_LOAD_PROFILE=true)
+DEFAULT_PROFILE=""
+
+# ============================================
+# Interface Settings
+# ============================================
+
+# Show ASCII art header (true/false)
+SHOW_ASCII_HEADER=true
+
+# Use colors in output (true/false)
+USE_COLORS=true
+
+# Clear screen before showing menu (true/false)
+CLEAR_SCREEN=true
+
+# ============================================
+# Advanced Settings
+# ============================================
+
+# MSI EC sysfs path (change only if different on your system)
+EC_PATH="/sys/devices/platform/msi-ec"
+
+# Config directory path
+CONFIG_DIR="$HOME/.config/msi-ec-control"
+
+# Temperature log file (for future logging feature)
+TEMP_LOG_FILE="$CONFIG_DIR/temperature.log"
+
+# Enable temperature logging (future feature)
+ENABLE_TEMP_LOGGING=false
+
+# ============================================
+# Color Scheme (ANSI color codes)
+# ============================================
+# You can customize colors by changing these values
+# Colors: 0=black, 1=red, 2=green, 3=yellow, 4=blue, 5=magenta, 6=cyan, 7=white
+
+COLOR_CRITICAL=1      # Red for critical temps
+COLOR_HIGH=3          # Yellow for high temps
+COLOR_NORMAL=2        # Green for normal temps
+COLOR_HEADER=4        # Blue for headers
+COLOR_INFO=6          # Cyan for info
+COLOR_WARNING=3       # Yellow for warnings
+
+# ============================================
+# Performance Presets
+# ============================================
+# Define custom preset configurations (future feature)
+
+# Gaming preset
+PRESET_GAMING_FAN="advanced"
+PRESET_GAMING_SHIFT="turbo"
+PRESET_GAMING_COOLER_BOOST="on"
+
+# Balanced preset
+PRESET_BALANCED_FAN="auto"
+PRESET_BALANCED_SHIFT="comfort"
+PRESET_BALANCED_COOLER_BOOST="off"
+
+# Silent preset
+PRESET_SILENT_FAN="silent"
+PRESET_SILENT_SHIFT="eco"
+PRESET_SILENT_SUPER_BATTERY="on"
+
+# ============================================
+# End of Configuration
+# ============================================
