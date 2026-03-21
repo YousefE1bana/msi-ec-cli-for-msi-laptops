@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=MSI Balanced Mode
+Comment=Activate balanced preset (Auto fan + Comfort)
+Exec=bash -c "sudo msi-ec-control --preset balanced && notify-send 'MSI Balanced Mode' 'Balanced preset activated!' -i applications-system"
+Icon=applications-system
+Terminal=false
+Categories=System;Settings;HardwareSettings;
+Keywords=msi;balanced;performance;laptop;

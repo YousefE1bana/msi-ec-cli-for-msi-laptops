@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=MSI Silent Mode
+Comment=Activate silent preset (Silent fan + Eco + Super Battery)
+Exec=bash -c "sudo msi-ec-control --preset silent && notify-send 'MSI Silent Mode' 'Silent preset activated!' -i applications-system"
+Icon=battery
+Terminal=false
+Categories=System;Settings;HardwareSettings;
+Keywords=msi;silent;quiet;battery;laptop;eco;

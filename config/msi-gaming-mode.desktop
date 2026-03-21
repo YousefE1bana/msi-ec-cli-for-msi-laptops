@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=MSI Gaming Mode
+Comment=Activate gaming preset (Advanced fan + Turbo + Cooler Boost)
+Exec=bash -c "sudo msi-ec-control --preset gaming && notify-send 'MSI Gaming Mode' 'Gaming preset activated!' -i applications-system"
+Icon=applications-gaming
+Terminal=false
+Categories=System;Settings;HardwareSettings;
+Keywords=msi;gaming;performance;laptop;turbo;

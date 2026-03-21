@@ -5,6 +5,41 @@ All notable changes to MSI EC Control Center will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-03-21
+
+### Added - Phase 2 Features
+- **Command-Line Arguments**
+  - Full CLI argument support for scripting and automation
+  - Options: `--help`, `--version`, `--status`, `--monitor`, `--analysis`
+  - Setting controls: `--set-fan`, `--set-shift`, `--set-cooler-boost`, etc.
+  - Preset shortcuts: `--preset gaming|balanced|silent`
+  - Profile management: `--save-profile`, `--load-profile`, `--list-profiles`
+  - Can now use the tool without interactive menu
+
+- **Quick Preset Desktop Shortcuts**
+  - `msi-gaming-mode.desktop` - One-click gaming mode activation
+  - `msi-balanced-mode.desktop` - One-click balanced mode
+  - `msi-silent-mode.desktop` - One-click silent mode
+  - All shortcuts include desktop notifications on activation
+  - Automatically installed by `install.sh`
+
+- **Temperature Logging to CSV**
+  - Optional temperature logging to `~/.config/msi-ec-control/temperature.csv`
+  - Logs: timestamp, CPU temp, GPU temp, fan speeds, modes
+  - Configurable via `ENABLE_TEMP_LOGGING` in config file
+  - Integrated with background monitoring service
+  - CSV format for easy analysis with spreadsheets or Python
+
+### Changed
+- Updated version to 2.1 in main script header
+- Enhanced `install.sh` to install new desktop shortcuts
+- Background monitor now supports temperature logging
+
+### Improved
+- Better scriptability with CLI arguments
+- Faster preset activation via desktop shortcuts
+- Data collection for thermal analysis
+
 ## [2.1.0] - 2026-03-21
 
 ### Added

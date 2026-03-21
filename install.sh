@@ -188,18 +188,50 @@ EOF
             chmod 644 "$desktop_dest"
         fi
 
-        # Update desktop database if possible
-        if command -v update-desktop-database &> /dev/null; then
-            if [ "$REQUIRES_SUDO" = true ]; then
-                sudo update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
-            else
-                update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
-            fi
-        fi
-
         print_success "Desktop file installed: $desktop_dest"
     else
         print_warning "Desktop file not found, skipping"
+    fi
+
+    # Install quick preset shortcuts
+    for preset in gaming balanced silent; do
+        local preset_source="$SCRIPT_DIR/config/msi-${preset}-mode.desktop"
+        local preset_dest="$DESKTOP_DIR/msi-${preset}-mode.desktop"
+
+        if [ -f "$preset_source" ]; then
+            # Create modified version with correct path
+            cat > "/tmp/msi-${preset}-mode.desktop" << EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=MSI $(echo ${preset^} | sed 's/.*/\u&/') Mode
+Comment=Activate ${preset} preset
+Exec=bash -c "sudo $INSTALL_DIR/msi-ec-control --preset ${preset} && notify-send 'MSI ${preset^} Mode' '${preset^} preset activated!' -i applications-system"
+Icon=$([ "$preset" = "gaming" ] && echo "applications-gaming" || [ "$preset" = "silent" ] && echo "battery" || echo "applications-system")
+Terminal=false
+Categories=System;Settings;HardwareSettings;
+Keywords=msi;${preset};performance;laptop;
+EOF
+
+            if [ "$REQUIRES_SUDO" = true ]; then
+                sudo mv "/tmp/msi-${preset}-mode.desktop" "$preset_dest"
+                sudo chmod 644 "$preset_dest"
+            else
+                mv "/tmp/msi-${preset}-mode.desktop" "$preset_dest"
+                chmod 644 "$preset_dest"
+            fi
+
+            print_success "Installed ${preset} mode shortcut"
+        fi
+    done
+
+    # Update desktop database if possible
+    if command -v update-desktop-database &> /dev/null; then
+        if [ "$REQUIRES_SUDO" = true ]; then
+            sudo update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
+        else
+            update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
+        fi
     fi
 }
 

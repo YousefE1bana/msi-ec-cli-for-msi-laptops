@@ -15,12 +15,14 @@ EC_PATH="/sys/devices/platform/msi-ec"
 CONFIG_DIR="$HOME/.config/msi-ec-control"
 CONFIG_FILE="$CONFIG_DIR/config.conf"
 LOG_FILE="$CONFIG_DIR/monitor.log"
+TEMP_LOG_FILE="$CONFIG_DIR/temperature.csv"
 
 # Default values
 TEMP_CRITICAL=85
 TEMP_HIGH=75
 CHECK_INTERVAL=30
 ENABLE_NOTIFICATIONS=true
+ENABLE_TEMP_LOGGING=false
 
 # Load configuration
 if [ -f "$CONFIG_FILE" ]; then
@@ -56,6 +58,30 @@ notify() {
 # Track warning state to avoid spam
 declare -A warned
 
+# Initialize temperature log file if logging is enabled
+if [ "$ENABLE_TEMP_LOGGING" = "true" ]; then
+    if [ ! -f "$TEMP_LOG_FILE" ]; then
+        echo "timestamp,cpu_temp,gpu_temp,cpu_fan,gpu_fan,fan_mode,shift_mode" > "$TEMP_LOG_FILE"
+        log "Created temperature log file: $TEMP_LOG_FILE"
+    fi
+fi
+
+# Function to log temperature data
+log_temperature() {
+    local cpu_temp="$1"
+    local gpu_temp="$2"
+
+    if [ "$ENABLE_TEMP_LOGGING" = "true" ]; then
+        # Get additional data
+        local cpu_fan=$(cat "$EC_PATH/cpu/realtime_fan_speed" 2>/dev/null || echo "N/A")
+        local gpu_fan=$(cat "$EC_PATH/gpu/realtime_fan_speed" 2>/dev/null || echo "N/A")
+        local fan_mode=$(cat "$EC_PATH/fan_mode" 2>/dev/null || echo "N/A")
+        local shift_mode=$(cat "$EC_PATH/shift_mode" 2>/dev/null || echo "N/A")
+
+        echo "$(date '+%Y-%m-%d %H:%M:%S'),${cpu_temp},${gpu_temp},${cpu_fan},${gpu_fan},${fan_mode},${shift_mode}" >> "$TEMP_LOG_FILE"
+    fi
+}
+
 # Main monitoring loop
 log "MSI EC Monitor started"
 
@@ -65,6 +91,9 @@ while true; do
 
     # Check GPU temperature
     gpu_temp=$(get_temp "$EC_PATH/gpu/realtime_temperature")
+
+    # Log temperature data if enabled
+    log_temperature "$cpu_temp" "$gpu_temp"
 
     # CPU critical warning
     if [ "$cpu_temp" -ge "$TEMP_CRITICAL" ] && [ "${warned[cpu_critical]:-0}" = "0" ]; then

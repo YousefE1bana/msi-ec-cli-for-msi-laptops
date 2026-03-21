@@ -2,7 +2,7 @@
 # ==========================================
 #  MSI EC Control - Advanced Edition
 #  Author: Yousef Osama (Enhanced by AI)
-#  Version: 2.0
+#  Version: 2.1
 # ==========================================
 
 set -euo pipefail
@@ -763,5 +763,212 @@ main() {
   done
 }
 
-# Run main menu
+# --- CLI Arguments Handler ---
+show_usage() {
+  cat << EOF
+MSI EC Control Center - Version 2.1
+
+Usage: msi-ec-control [OPTION] [VALUE]
+
+OPTIONS:
+  -h, --help                 Show this help message
+  -v, --version              Show version information
+  -s, --status               Display current system status and exit
+  -m, --monitor              Start real-time monitoring mode
+  -a, --analysis             Run 30-second thermal analysis
+
+  --set-fan MODE             Set fan mode (auto|silent|advanced)
+  --set-shift MODE           Set shift mode (eco|comfort|turbo)
+  --set-cooler-boost STATE   Set cooler boost (on|off)
+  --set-super-battery STATE  Set super battery (on|off)
+  --set-webcam STATE         Set webcam (on|off)
+  --set-win-key STATE        Set Windows key (left|right)
+  --set-backlight LEVEL      Set keyboard backlight (0-3)
+
+  --preset gaming            Apply gaming preset (advanced+turbo+cooler)
+  --preset balanced          Apply balanced preset (auto+comfort)
+  --preset silent            Apply silent preset (silent+eco+battery)
+
+  --save-profile NAME        Save current settings as profile
+  --load-profile NAME        Load saved profile
+  --list-profiles            List all saved profiles
+
+  --history                  Show action history
+
+EXAMPLES:
+  sudo msi-ec-control --status
+  sudo msi-ec-control --set-fan advanced --set-shift turbo
+  sudo msi-ec-control --preset gaming
+  sudo msi-ec-control --load-profile my-config
+  sudo msi-ec-control --monitor
+
+For interactive mode, run without arguments: sudo msi-ec-control
+
+EOF
+}
+
+show_version() {
+  echo "MSI EC Control Center v2.1"
+  echo "Author: Yousef Osama"
+  echo "License: MIT"
+}
+
+# Parse command-line arguments
+if [ $# -gt 0 ]; then
+  case "$1" in
+    -h|--help)
+      show_usage
+      exit 0
+      ;;
+    -v|--version)
+      show_version
+      exit 0
+      ;;
+    -s|--status)
+      declare -A status
+      collect_status status
+      show_advanced_status
+      exit 0
+      ;;
+    -m|--monitor)
+      monitor_realtime
+      exit 0
+      ;;
+    -a|--analysis)
+      run_analysis
+      exit 0
+      ;;
+    --set-fan)
+      if [ -z "${2:-}" ]; then
+        echo "Error: Fan mode required (auto|silent|advanced)"
+        exit 1
+      fi
+      set_fan_mode "$2"
+      echo "✓ Fan mode set to: $2"
+      log_action "CLI: Set fan mode to $2"
+      exit 0
+      ;;
+    --set-shift)
+      if [ -z "${2:-}" ]; then
+        echo "Error: Shift mode required (eco|comfort|turbo)"
+        exit 1
+      fi
+      set_shift_mode "$2"
+      echo "✓ Shift mode set to: $2"
+      log_action "CLI: Set shift mode to $2"
+      exit 0
+      ;;
+    --set-cooler-boost)
+      if [ -z "${2:-}" ]; then
+        echo "Error: State required (on|off)"
+        exit 1
+      fi
+      toggle_setting "cooler_boost" "$2"
+      echo "✓ Cooler boost set to: $2"
+      log_action "CLI: Set cooler boost to $2"
+      exit 0
+      ;;
+    --set-super-battery)
+      if [ -z "${2:-}" ]; then
+        echo "Error: State required (on|off)"
+        exit 1
+      fi
+      toggle_setting "super_battery" "$2"
+      echo "✓ Super battery set to: $2"
+      log_action "CLI: Set super battery to $2"
+      exit 0
+      ;;
+    --set-webcam)
+      if [ -z "${2:-}" ]; then
+        echo "Error: State required (on|off)"
+        exit 1
+      fi
+      toggle_setting "webcam" "$2"
+      echo "✓ Webcam set to: $2"
+      log_action "CLI: Set webcam to $2"
+      exit 0
+      ;;
+    --set-win-key)
+      if [ -z "${2:-}" ]; then
+        echo "Error: State required (left|right)"
+        exit 1
+      fi
+      toggle_setting "win_key" "$2"
+      echo "✓ Windows key set to: $2"
+      log_action "CLI: Set Windows key to $2"
+      exit 0
+      ;;
+    --set-backlight)
+      if [ -z "${2:-}" ]; then
+        echo "Error: Level required (0-3)"
+        exit 1
+      fi
+      set_kbd_backlight "$2"
+      echo "✓ Keyboard backlight set to: $2"
+      log_action "CLI: Set keyboard backlight to $2"
+      exit 0
+      ;;
+    --preset)
+      if [ -z "${2:-}" ]; then
+        echo "Error: Preset name required (gaming|balanced|silent)"
+        exit 1
+      fi
+      case "$2" in
+        gaming)
+          apply_preset "gaming"
+          echo "✓ Gaming preset applied"
+          log_action "CLI: Applied gaming preset"
+          ;;
+        balanced)
+          apply_preset "balanced"
+          echo "✓ Balanced preset applied"
+          log_action "CLI: Applied balanced preset"
+          ;;
+        silent)
+          apply_preset "silent"
+          echo "✓ Silent preset applied"
+          log_action "CLI: Applied silent preset"
+          ;;
+        *)
+          echo "Error: Unknown preset '$2' (use: gaming|balanced|silent)"
+          exit 1
+          ;;
+      esac
+      exit 0
+      ;;
+    --save-profile)
+      if [ -z "${2:-}" ]; then
+        echo "Error: Profile name required"
+        exit 1
+      fi
+      save_profile "$2"
+      echo "✓ Profile saved: $2"
+      exit 0
+      ;;
+    --load-profile)
+      if [ -z "${2:-}" ]; then
+        echo "Error: Profile name required"
+        exit 1
+      fi
+      load_profile "$2"
+      echo "✓ Profile loaded: $2"
+      exit 0
+      ;;
+    --list-profiles)
+      list_profiles
+      exit 0
+      ;;
+    --history)
+      show_history
+      exit 0
+      ;;
+    *)
+      echo "Error: Unknown option '$1'"
+      echo "Use --help for usage information"
+      exit 1
+      ;;
+  esac
+fi
+
+# Run main menu (interactive mode)
 main
